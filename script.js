@@ -1,11 +1,158 @@
 /* ==========================================================================
-   SARNENDU DAS — PORTFOLIO SCRIPT (CUSTOM CURSOR & RESPONSIVE ENGINE)
+   SARNENDU DAS — PORTFOLIO SCRIPT (120HZ REFRESH ENGINE & INTRO VIDEO REVEAL)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
 
     /* ----------------------------------------------------------------------
-       00. CUSTOM INTERACTIVE MOUSE CURSOR SYSTEM
+       00. CINEMATIC INTRO VIDEO REVEAL OVERLAY & CANVAS STREAM ENGINE
+       ---------------------------------------------------------------------- */
+    const introOverlay = document.getElementById('intro-overlay');
+    const introCanvas = document.getElementById('intro-video-canvas');
+    const progressBar = document.getElementById('intro-progress-bar');
+    const percentEl = document.getElementById('intro-percent');
+    const loadingTextEl = document.getElementById('intro-loading-text');
+    const skipBtn = document.getElementById('intro-skip-btn');
+
+    let introActive = true;
+
+    if (introCanvas && introOverlay) {
+        const ctx = introCanvas.getContext('2d');
+        let width = introCanvas.width = window.innerWidth;
+        let height = introCanvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            if (introActive) {
+                width = introCanvas.width = window.innerWidth;
+                height = introCanvas.height = window.innerHeight;
+            }
+        });
+
+        // 120Hz Cybernetic Grid & Particle Stream
+        const gridCols = 30;
+        const gridRows = 20;
+        let scanLineY = 0;
+        const streamParticles = [];
+
+        for (let i = 0; i < 60; i++) {
+            streamParticles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                speed: Math.random() * 4 + 2,
+                len: Math.random() * 80 + 20,
+                alpha: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function renderIntroVideoCanvas() {
+            if (!introActive) return;
+
+            ctx.fillStyle = 'rgba(7, 7, 9, 0.25)';
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw Digital Grid
+            ctx.strokeStyle = 'rgba(255, 43, 43, 0.08)';
+            ctx.lineWidth = 1;
+            const stepX = width / gridCols;
+            const stepY = height / gridRows;
+
+            for (let x = 0; x < width; x += stepX) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+
+            for (let y = 0; y < height; y += stepY) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // Draw Digital Laser Streams (120Hz Smooth)
+            ctx.strokeStyle = 'rgba(255, 43, 43, 0.6)';
+            streamParticles.forEach(p => {
+                p.y += p.speed;
+                if (p.y > height) {
+                    p.y = -p.len;
+                    p.x = Math.random() * width;
+                }
+
+                const grad = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.len);
+                grad.addColorStop(0, 'rgba(255, 43, 43, 0)');
+                grad.addColorStop(1, `rgba(255, 43, 43, ${p.alpha})`);
+
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x, p.y + p.len);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+
+            // Draw Laser Scanning Beam
+            scanLineY = (scanLineY + 3) % height;
+            ctx.fillStyle = 'rgba(255, 43, 43, 0.15)';
+            ctx.fillRect(0, scanLineY, width, 4);
+
+            requestAnimationFrame(renderIntroVideoCanvas);
+        }
+
+        requestAnimationFrame(renderIntroVideoCanvas);
+
+        // Progress counter animation
+        let progress = 0;
+        const statusMsgs = [
+            "LOADING NEURAL CORE...",
+            "COMPILING GRAPHICS ENGINE (120HZ)...",
+            "INITIALIZING DARK EDITORIAL FRAMEWORK...",
+            "SYSTEM READY // REVEALING PORTFOLIO..."
+        ];
+
+        const progressInterval = setInterval(() => {
+            progress += Math.floor(Math.random() * 8 + 4);
+            if (progress > 100) progress = 100;
+
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            if (percentEl) percentEl.textContent = `${progress}%`;
+
+            if (loadingTextEl) {
+                if (progress < 30) loadingTextEl.textContent = statusMsgs[0];
+                else if (progress < 60) loadingTextEl.textContent = statusMsgs[1];
+                else if (progress < 90) loadingTextEl.textContent = statusMsgs[2];
+                else loadingTextEl.textContent = statusMsgs[3];
+            }
+
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                setTimeout(revealPortfolioSite, 300);
+            }
+        }, 80);
+
+        function revealPortfolioSite() {
+            if (!introActive) return;
+            introActive = false;
+            introOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            
+            // Trigger initial entrance reveals
+            setTimeout(() => {
+                const initialReveals = document.querySelectorAll('#hero .reveal-item');
+                initialReveals.forEach(el => el.classList.add('revealed'));
+            }, 200);
+        }
+
+        if (skipBtn) {
+            skipBtn.addEventListener('click', () => {
+                clearInterval(progressInterval);
+                revealPortfolioSite();
+            });
+        }
+    }
+
+    /* ----------------------------------------------------------------------
+       01. CUSTOM INTERACTIVE MOUSE CURSOR SYSTEM (120HZ LERP ENGINE)
        ---------------------------------------------------------------------- */
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
@@ -18,47 +165,35 @@ document.addEventListener('DOMContentLoaded', () => {
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // Move dot instantly
             cursorDot.style.left = `${mouseX}px`;
             cursorDot.style.top = `${mouseY}px`;
         });
 
-        // Smooth Lerp animation for ring
+        // High refresh rate 120Hz smooth ring lerp
         function renderCursorRing() {
-            ringX += (mouseX - ringX) * 0.15;
-            ringY += (mouseY - ringY) * 0.15;
+            ringX += (mouseX - ringX) * 0.22;
+            ringY += (mouseY - ringY) * 0.22;
 
             cursorRing.style.left = `${ringX}px`;
             cursorRing.style.top = `${ringY}px`;
 
             requestAnimationFrame(renderCursorRing);
         }
-        renderCursorRing();
+        requestAnimationFrame(renderCursorRing);
 
-        // Attach hover listeners to all interactive items
-        const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .pill, .filter-btn, .card-hover, .social-btn, .back-to-top, .brand-logo, .view-project-btn, .open-resume-trigger');
+        const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .pill, .filter-btn, .card-hover, .social-btn, .back-to-top, .brand-logo, .view-project-btn, .open-resume-trigger, .intro-skip-btn');
 
         interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorRing.classList.add('hovered');
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorRing.classList.remove('hovered');
-            });
+            el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => cursorRing.classList.remove('hovered'));
         });
 
-        // Click active state
-        document.addEventListener('mousedown', () => {
-            cursorRing.classList.add('active');
-        });
-
-        document.addEventListener('mouseup', () => {
-            cursorRing.classList.remove('active');
-        });
+        document.addEventListener('mousedown', () => cursorRing.classList.add('active'));
+        document.addEventListener('mouseup', () => cursorRing.classList.remove('active'));
     }
 
     /* ----------------------------------------------------------------------
-       01. AUTO-APPLY REVEAL ANIMATIONS TO EVERY FONT & TEXT ELEMENT
+       02. AUTO-APPLY REVEAL ANIMATIONS TO EVERY FONT & TEXT ELEMENT
        ---------------------------------------------------------------------- */
     const allTextElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, .metric-item, .info-cell, .skill-card, .project-card, .timeline-content, .edu-card, .channel-item, .form-group, .footer-left, .footer-badge');
     allTextElements.forEach((el, index) => {
@@ -69,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ----------------------------------------------------------------------
-       02. AMBIENT PARTICLES CANVAS
+       03. AMBIENT PARTICLES CANVAS (120HZ SPEED NORMALIZED)
        ---------------------------------------------------------------------- */
     const canvas = document.getElementById('particle-canvas');
     if (canvas) {
@@ -90,9 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 x: Math.random() * width,
                 y: Math.random() * height,
                 radius: Math.random() * 1.6 + 0.6,
-                color: Math.random() > 0.3 ? 'rgba(255, 43, 43, ' + (Math.random() * 0.3 + 0.1) + ')' : 'rgba(255, 255, 255, ' + (Math.random() * 0.15 + 0.05) + ')',
-                vx: (Math.random() - 0.5) * 0.25,
-                vy: (Math.random() - 0.5) * 0.25
+                color: Math.random() > 0.3 ? `rgba(255, 43, 43, ${Math.random() * 0.3 + 0.1})` : `rgba(255, 255, 255, ${Math.random() * 0.15 + 0.05})`,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3
             });
         }
 
@@ -117,11 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(drawParticles);
         }
 
-        drawParticles();
+        requestAnimationFrame(drawParticles);
     }
 
     /* ----------------------------------------------------------------------
-       03. AMBIENT CURSOR GLOW EFFECT
+       04. AMBIENT CURSOR GLOW EFFECT (120HZ LERP)
        ---------------------------------------------------------------------- */
     const cursorGlow = document.getElementById('cursor-glow');
     if (cursorGlow && window.innerWidth > 768) {
@@ -134,18 +269,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         function animateCursorGlow() {
-            glowX += (mouseX - glowX) * 0.1;
-            glowY += (mouseY - glowY) * 0.1;
+            glowX += (mouseX - glowX) * 0.15;
+            glowY += (mouseY - glowY) * 0.15;
             cursorGlow.style.left = `${glowX}px`;
             cursorGlow.style.top = `${glowY}px`;
             requestAnimationFrame(animateCursorGlow);
         }
 
-        animateCursorGlow();
+        requestAnimationFrame(animateCursorGlow);
     }
 
     /* ----------------------------------------------------------------------
-       04. FLUID SCROLL REVEAL OBSERVER & FONT ANIMATIONS
+       05. FLUID SCROLL REVEAL OBSERVER & FONT ANIMATIONS
        ---------------------------------------------------------------------- */
     const revealItems = document.querySelectorAll('.reveal-item');
 
@@ -209,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       05. DYNAMIC TYPEWRITER EFFECT
+       06. DYNAMIC TYPEWRITER EFFECT
        ---------------------------------------------------------------------- */
     const typewriterElement = document.getElementById('hero-typewriter');
     if (typewriterElement) {
@@ -253,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       06. HEADER SCROLL & NAV HIGHLIGHT
+       07. HEADER SCROLL & NAV HIGHLIGHT
        ---------------------------------------------------------------------- */
     const header = document.getElementById('site-header');
     const sections = document.querySelectorAll('section[id]');
@@ -284,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ----------------------------------------------------------------------
-       07. MOBILE NAVIGATION MENU
+       08. MOBILE NAVIGATION MENU
        ---------------------------------------------------------------------- */
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileClose = document.getElementById('mobile-close');
@@ -306,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 
     /* ----------------------------------------------------------------------
-       08. SKILLS FILTERING TABS
+       09. SKILLS FILTERING TABS
        ---------------------------------------------------------------------- */
     const filterBtns = document.querySelectorAll('.filter-btn');
     const skillCards = document.querySelectorAll('.skill-card');
@@ -335,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ----------------------------------------------------------------------
-       09. INTERACTIVE LIVE TERMINAL
+       10. INTERACTIVE LIVE TERMINAL
        ---------------------------------------------------------------------- */
     const terminalInput = document.getElementById('terminal-input');
     const terminalBody = document.getElementById('terminal-body');
@@ -417,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       10. RESUME PDF MODAL
+       11. RESUME PDF MODAL
        ---------------------------------------------------------------------- */
     const resumeTriggers = document.querySelectorAll('.open-resume-trigger');
     const resumeModal = document.getElementById('resume-modal');
@@ -446,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       11. PROJECT DETAILS MODAL
+       12. PROJECT DETAILS MODAL
        ---------------------------------------------------------------------- */
     const projectTriggers = document.querySelectorAll('.view-project-btn');
     const projectModal = document.getElementById('project-modal');
@@ -556,7 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       12. COPY EMAIL TO CLIPBOARD
+       13. COPY EMAIL TO CLIPBOARD
        ---------------------------------------------------------------------- */
     const copyEmailBtn = document.getElementById('copy-email-btn');
     if (copyEmailBtn) {
@@ -573,7 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       13. CONTACT FORM SUBMISSION
+       14. CONTACT FORM SUBMISSION
        ---------------------------------------------------------------------- */
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
@@ -597,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       14. BACK TO TOP BUTTON
+       15. BACK TO TOP BUTTON
        ---------------------------------------------------------------------- */
     const backToTopBtn = document.getElementById('back-to-top-btn');
     if (backToTopBtn) {

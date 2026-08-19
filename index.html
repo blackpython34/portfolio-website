@@ -29,6 +29,37 @@
 </head>
 <body class="dark-theme">
 
+    <!-- CINEMATIC INTRO VIDEO REVEAL OVERLAY -->
+    <div class="intro-overlay" id="intro-overlay">
+        <div class="intro-video-container">
+            <canvas id="intro-video-canvas"></canvas>
+            <div class="intro-vignette"></div>
+        </div>
+        
+        <div class="intro-content">
+            <div class="intro-brand">
+                <span class="intro-symbol">&lt;SARNENDU DAS/&gt;</span>
+                <span class="intro-subtitle">AI &amp; FULL-STACK SOFTWARE ENGINEER</span>
+            </div>
+
+            <div class="intro-terminal-status">
+                <span class="intro-prompt">system_init --mode=dark-editorial --refresh=120hz</span>
+                <div class="intro-progress-bar-container">
+                    <div class="intro-progress-bar" id="intro-progress-bar"></div>
+                </div>
+                <div class="intro-status-meta">
+                    <span class="intro-percent" id="intro-percent">0%</span>
+                    <span class="intro-loading-text" id="intro-loading-text">LOADING NEURAL CORE...</span>
+                </div>
+            </div>
+
+            <button class="intro-skip-btn" id="intro-skip-btn">
+                <span>ENTER PORTFOLIO</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Custom Interactive Cursor -->
     <div class="custom-cursor-dot" id="cursor-dot"></div>
     <div class="custom-cursor-ring" id="cursor-ring"></div>
