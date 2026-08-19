@@ -170,8 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            cursorDot.style.left = `${mouseX}px`;
-            cursorDot.style.top = `${mouseY}px`;
+            cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
         });
 
         // Frame-rate independent delta-time exponential dampening for ring lerp
@@ -181,12 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const delta = Math.min((currentTime - lastRingTime) / 1000, 0.1);
             lastRingTime = currentTime;
 
-            const factor = 1 - Math.exp(-16 * delta);
+            const factor = 1 - Math.exp(-18 * delta);
             ringX += (mouseX - ringX) * factor;
             ringY += (mouseY - ringY) * factor;
 
-            cursorRing.style.left = `${ringX}px`;
-            cursorRing.style.top = `${ringY}px`;
+            cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
 
             requestAnimationFrame(renderCursorRing);
         }
@@ -309,8 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             glowX += (mouseX - glowX) * factor;
             glowY += (mouseY - glowY) * factor;
 
-            cursorGlow.style.left = `${glowX}px`;
-            cursorGlow.style.top = `${glowY}px`;
+            cursorGlow.style.transform = `translate3d(${glowX}px, ${glowY}px, 0) translate(-50%, -50%)`;
 
             requestAnimationFrame(animateCursorGlow);
         }
