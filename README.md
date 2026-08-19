@@ -1,5 +1,6 @@
 # Sarnendu Das — Dark Editorial Portfolio Website 🚀
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-portfoliosarnendu.netlify.app-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://portfoliosarnendu.netlify.app/)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
@@ -7,7 +8,9 @@
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![IIT Patna](https://img.shields.io/badge/IIT%20Patna-B.Sc%20CS-FF2B2B?style=for-the-badge)
 
-Official personal portfolio website of **Sarnendu Das** — Dual-Degree Computer Science Undergraduate at **Indian Institute of Technology Patna (IIT Patna)** & **Dr. B.C. Roy Engineering College (BCREC)**. Designed with a high-contrast **Dark Editorial** aesthetic (`#0B0B0D` background, `#FF2B2B` electric red accents), smooth font animations, an interactive terminal, custom mouse cursor physics, and full mobile-first responsiveness.
+Official personal portfolio website of **Sarnendu Das** — Dual-Degree Computer Science Undergraduate at **Indian Institute of Technology Patna (IIT Patna)** & **Dr. B.C. Roy Engineering College (BCREC)**. 
+
+🌐 **Live Website**: [https://portfoliosarnendu.netlify.app/](https://portfoliosarnendu.netlify.app/)
 
 ---
 
@@ -17,12 +20,12 @@ Official personal portfolio website of **Sarnendu Das** — Dual-Degree Computer
 * Inspired by high-end Pinterest editorial web designs ([pin.it/7vGUdMwV5](https://pin.it/7vGUdMwV5)).
 * Deep obsidian theme (`#0B0B0D`), glassmorphic panels, ambient particle background, and subtle red glow highlights.
 
-### 📐 2. Straight, Level & Level Layout
+### 📐 2. Straight, Level & Clean Layout
 * Clean, non-skewed hero framing, skill cards, project cards, and timeline nodes without intrusive 3D tilt.
 * Stable, crisp layout alignment across viewports.
 
 ### 🔤 3. Global Animated Font System
-* **Universal Scroll Reveal**: Every single text element (`h1`-`h6`, `p`, `span`, `a`, `label`, `button`, `li`, `.count-up`) fades and slides smoothly into view.
+* **Universal Scroll Reveal**: Every text element (`h1`-`h6`, `p`, `span`, `a`, `label`, `button`, `li`, `.count-up`) fades and slides smoothly into view.
 * **Kinetic Typography Shimmers**: Headings and nav links feature color shimmers, expanded letter-spacing (`letter-spacing: 0.14em`), and glowing text shadows on hover.
 * **Dynamic Typewriter**: Hero headline dynamically types and cycles through key career roles.
 * **Count-Up Stat Metrics**: Easing count-up numbers for academic CGPA (`8.7`), hackathon wins, and production projects.
@@ -52,6 +55,25 @@ Official personal portfolio website of **Sarnendu Das** — Dual-Degree Computer
 
 ---
 
+## 🌐 Live Deployment & Local Setup
+
+### Live Production Link
+👉 **[https://portfoliosarnendu.netlify.app/](https://portfoliosarnendu.netlify.app/)**
+
+### Local Development Setup
+To run the portfolio website locally:
+
+```bash
+# Option 1: Simple HTTP Server (Node.js)
+npx serve . -p 8080
+
+# Option 2: Python HTTP Server
+python -m http.server 8080
+```
+Open your browser and navigate to `http://localhost:8080`.
+
+---
+
 ## 🛠️ Tech Stack & Architecture
 
 * **Core Structure**: HTML5 Semantic Markup
@@ -77,31 +99,12 @@ portfolio-website/
 
 ---
 
-## 🚀 Local Development Setup
-
-To run the portfolio website locally:
-
-### Option 1: Simple HTTP Server (Node.js)
-```bash
-# Serve current directory on http://localhost:8080
-npx serve . -p 8080
-```
-
-### Option 2: Python HTTP Server
-```bash
-# Python 3
-python -m http.server 8080
-```
-
-Open your browser and navigate to `http://localhost:8080`.
-
----
-
 ## 👤 Author & Contact
 
 **Sarnendu Das**  
 * 🎓 B.Tech CSE (AI & ML) — Dr. B.C. Roy Engineering College (2024–Present)
 * 🎓 B.Sc Computer Science & Data Analytics — IIT Patna (2024–Present)
+* 🌐 Portfolio: [portfoliosarnendu.netlify.app](https://portfoliosarnendu.netlify.app/)
 * 📧 Email: [sarnendudas923@gmail.com](mailto:sarnendudas923@gmail.com)
 * 🐙 GitHub: [@blackpython34](https://github.com/blackpython34)
 * 📍 Location: Bankura / Durgapur, West Bengal, India
