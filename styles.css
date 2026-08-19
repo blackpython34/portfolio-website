@@ -779,6 +779,11 @@ a:hover {
     width: 100%;
 }
 
+.hero-content {
+    min-width: 0;
+    width: 100%;
+}
+
 .hero-tag-badge {
     display: inline-flex;
     padding: 6px 16px;
@@ -798,12 +803,14 @@ a:hover {
 
 .hero-title {
     font-family: var(--font-title);
-    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-size: clamp(1.8rem, 4.2vw, 4rem);
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.02em;
     margin-bottom: 24px;
     min-height: 2.2em;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 #hero-typewriter {
@@ -928,11 +935,17 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    width: 100%;
+    min-width: 0;
 }
 
 .photo-frame-outer {
     position: relative;
     padding: 16px;
+    width: 100%;
+    max-width: 412px;
+    display: flex;
+    justify-content: center;
 }
 
 .frame-corner {
