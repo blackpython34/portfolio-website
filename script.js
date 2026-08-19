@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SARNENDU DAS — PORTFOLIO SCRIPT (120HZ REFRESH ENGINE & INTRO VIDEO REVEAL)
+   SARNENDU DAS — PORTFOLIO SCRIPT (MAX DEVICE COMPATIBILITY & DYNAMIC FLUID ENGINE)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 120Hz Cybernetic Grid & Particle Stream
+        // Dynamic High-Refresh Rate Cybernetic Grid & Particle Stream
         const gridCols = 30;
         const gridRows = 20;
         let scanLineY = 0;
@@ -44,8 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        function renderIntroVideoCanvas() {
+        let lastIntroTime = performance.now();
+        function renderIntroVideoCanvas(now) {
             if (!introActive) return;
+
+            const currentTime = now || performance.now();
+            const dt = Math.min((currentTime - lastIntroTime) / (1000 / 60), 2.5);
+            lastIntroTime = currentTime;
 
             ctx.fillStyle = 'rgba(7, 7, 9, 0.25)';
             ctx.fillRect(0, 0, width, height);
@@ -70,10 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.stroke();
             }
 
-            // Draw Digital Laser Streams (120Hz Smooth)
+            // Draw Digital Laser Streams (Frame-Rate Normalized)
             ctx.strokeStyle = 'rgba(255, 43, 43, 0.6)';
             streamParticles.forEach(p => {
-                p.y += p.speed;
+                p.y += p.speed * dt;
                 if (p.y > height) {
                     p.y = -p.len;
                     p.x = Math.random() * width;
@@ -92,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Draw Laser Scanning Beam
-            scanLineY = (scanLineY + 3) % height;
+            scanLineY = (scanLineY + 3 * dt) % height;
             ctx.fillStyle = 'rgba(255, 43, 43, 0.15)';
             ctx.fillRect(0, scanLineY, width, 4);
 
@@ -105,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let progress = 0;
         const statusMsgs = [
             "LOADING NEURAL CORE...",
-            "COMPILING GRAPHICS ENGINE (120HZ)...",
+            "OPTIMIZING GRAPHICS ENGINE (MAX COMPATIBILITY)...",
             "INITIALIZING DARK EDITORIAL FRAMEWORK...",
             "SYSTEM READY // REVEALING PORTFOLIO..."
         ];
@@ -152,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       01. CUSTOM INTERACTIVE MOUSE CURSOR SYSTEM (120HZ LERP ENGINE)
+       01. CUSTOM INTERACTIVE MOUSE CURSOR SYSTEM (MAX DEVICE COMPATIBILITY LERP)
        ---------------------------------------------------------------------- */
     const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
@@ -169,10 +174,16 @@ document.addEventListener('DOMContentLoaded', () => {
             cursorDot.style.top = `${mouseY}px`;
         });
 
-        // High refresh rate 120Hz smooth ring lerp
-        function renderCursorRing() {
-            ringX += (mouseX - ringX) * 0.22;
-            ringY += (mouseY - ringY) * 0.22;
+        // Frame-rate independent delta-time exponential dampening for ring lerp
+        let lastRingTime = performance.now();
+        function renderCursorRing(now) {
+            const currentTime = now || performance.now();
+            const delta = Math.min((currentTime - lastRingTime) / 1000, 0.1);
+            lastRingTime = currentTime;
+
+            const factor = 1 - Math.exp(-16 * delta);
+            ringX += (mouseX - ringX) * factor;
+            ringY += (mouseY - ringY) * factor;
 
             cursorRing.style.left = `${ringX}px`;
             cursorRing.style.top = `${ringY}px`;
@@ -204,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ----------------------------------------------------------------------
-       03. AMBIENT PARTICLES CANVAS (120HZ SPEED NORMALIZED)
+       03. AMBIENT PARTICLES CANVAS (MAX DEVICE SPEED NORMALIZED)
        ---------------------------------------------------------------------- */
     const canvas = document.getElementById('particle-canvas');
     if (canvas) {
@@ -231,12 +242,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        function drawParticles() {
+        let isUserScrolling = false;
+        let scrollTimer;
+        window.addEventListener('scroll', () => {
+            isUserScrolling = true;
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                isUserScrolling = false;
+            }, 120);
+        }, { passive: true });
+
+        let lastParticleTime = performance.now();
+        function drawParticles(now) {
+            if (isUserScrolling && window.innerWidth <= 768) {
+                requestAnimationFrame(drawParticles);
+                return;
+            }
+
+            const currentTime = now || performance.now();
+            const dt = Math.min((currentTime - lastParticleTime) / (1000 / 60), 2.5);
+            lastParticleTime = currentTime;
+
             ctx.clearRect(0, 0, width, height);
 
             particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
 
                 if (p.x < 0) p.x = width;
                 if (p.x > width) p.x = 0;
@@ -256,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       04. AMBIENT CURSOR GLOW EFFECT (120HZ LERP)
+       04. AMBIENT CURSOR GLOW EFFECT (MAX DEVICE COMPATIBILITY LERP)
        ---------------------------------------------------------------------- */
     const cursorGlow = document.getElementById('cursor-glow');
     if (cursorGlow && window.innerWidth > 768) {
@@ -268,11 +299,19 @@ document.addEventListener('DOMContentLoaded', () => {
             mouseY = e.clientY;
         });
 
-        function animateCursorGlow() {
-            glowX += (mouseX - glowX) * 0.15;
-            glowY += (mouseY - glowY) * 0.15;
+        let lastGlowTime = performance.now();
+        function animateCursorGlow(now) {
+            const currentTime = now || performance.now();
+            const delta = Math.min((currentTime - lastGlowTime) / 1000, 0.1);
+            lastGlowTime = currentTime;
+
+            const factor = 1 - Math.exp(-12 * delta);
+            glowX += (mouseX - glowX) * factor;
+            glowY += (mouseY - glowY) * factor;
+
             cursorGlow.style.left = `${glowX}px`;
             cursorGlow.style.top = `${glowY}px`;
+
             requestAnimationFrame(animateCursorGlow);
         }
 
@@ -394,29 +433,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
 
+    let scrollTicking = false;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (!scrollTicking) {
+            window.requestAnimationFrame(() => {
+                const scrollY = window.scrollY;
+                if (scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+
+                if (window.innerWidth > 768) {
+                    let currentSectionId = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 140;
+                        const sectionHeight = section.offsetHeight;
+                        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                            currentSectionId = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(link => {
+                        if (link.getAttribute('href') === `#${currentSectionId}`) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                }
+                scrollTicking = false;
+            });
+            scrollTicking = true;
         }
-
-        let currentSectionId = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - 140;
-            const sectionHeight = section.offsetHeight;
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                currentSectionId = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                link.classList.add('active');
-            }
-        });
-    });
+    }, { passive: true });
 
     /* ----------------------------------------------------------------------
        08. MOBILE NAVIGATION MENU
