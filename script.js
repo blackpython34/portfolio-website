@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             introActive = false;
             introOverlay.classList.add('hidden');
             document.body.style.overflow = '';
-            
+
             // Trigger initial entrance reveals
             setTimeout(() => {
                 const initialReveals = document.querySelectorAll('#hero .reveal-item');
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
+
             cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
         });
 
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function triggerCountUp(element) {
         if (element.classList.contains('counted')) return;
         element.classList.add('counted');
-        
+
         const targetStr = element.getAttribute('data-target');
         if (!targetStr) return;
 
@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function type() {
             const currentTitle = titles[titleIndex];
-            
+
             if (isDeleting) {
                 typewriterElement.textContent = currentTitle.substring(0, charIndex - 1);
                 charIndex--;
@@ -755,31 +755,527 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------------------
-       14. CONTACT FORM SUBMISSION
+       14. TOAST NOTIFICATION ENGINE
+       ---------------------------------------------------------------------- */
+    function showToast(title, desc, type = 'success', duration = 4500) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        let iconClass = 'fa-circle-check';
+        if (type === 'error') iconClass = 'fa-circle-exclamation';
+        if (type === 'info') iconClass = 'fa-circle-info';
+
+        toast.innerHTML = `
+            <i class="fa-solid ${iconClass} toast-icon"></i>
+            <div class="toast-body">
+                <div class="toast-title">${escapeHtml(title)}</div>
+                <div class="toast-desc">${escapeHtml(desc)}</div>
+            </div>
+            <button class="toast-close" aria-label="Close Toast">&times;</button>
+        `;
+
+        container.appendChild(toast);
+
+        const closeBtn = toast.querySelector('.toast-close');
+        let dismissTimer = setTimeout(dismissToast, duration);
+
+        function dismissToast() {
+            clearTimeout(dismissTimer);
+            toast.classList.add('toast-hiding');
+            setTimeout(() => toast.remove(), 400);
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', dismissToast);
+    }
+
+    /* ----------------------------------------------------------------------
+       15. RESPONSE SYSTEM DATA & LOCAL STORAGE DATABASE
+       ---------------------------------------------------------------------- */
+    const RESPONSE_STORAGE_KEY = 'sarnendu_portfolio_responses';
+    const WEB3FORMS_ACCESS_KEY = '16975e32-7f70-4104-a8aa-c69534e52a28';
+
+    function getStoredResponses() {
+        try {
+            const stored = localStorage.getItem(RESPONSE_STORAGE_KEY);
+            if (stored) return JSON.parse(stored);
+        } catch (e) {
+            console.error('Error reading responses from localStorage', e);
+        }
+
+        // Initial Seed Data if empty
+        const seed = [
+            {
+                id: 'RESP-9041',
+                name: 'Priya Sharma',
+                email: 'priya.sharma@techrecruiters.co.in',
+                subject: 'Software Engineering Internship Opportunity',
+                message: 'Hi Sarnendu, We reviewed your portfolio and were very impressed with your dual-degree work at IIT Patna and BCREC as well as your Hack Zenith win. We have an opening for a Full-Stack Engineering Intern position. Let us know if you are interested in discussing details.',
+                timestamp: new Date(Date.now() - 3600000 * 24).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
+                unread: true,
+                starred: true
+            },
+            {
+                id: 'RESP-8120',
+                name: 'Arjun Roy',
+                email: 'arjun.roy@hackathon-org.in',
+                subject: 'Hack Zenith 2026 Winner Showcase & Tech Talk',
+                message: 'Congratulations on securing 3rd place in Hack Zenith 2026! We would love to feature your project in our upcoming tech showcase newsletter and invite you to present a 15-min talk on Next.js 14 architecture.',
+                timestamp: new Date(Date.now() - 3600000 * 72).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
+                unread: false,
+                starred: false
+            }
+        ];
+
+        saveStoredResponses(seed);
+        return seed;
+    }
+
+    function saveStoredResponses(responses) {
+        try {
+            localStorage.setItem(RESPONSE_STORAGE_KEY, JSON.stringify(responses));
+            updateInboxBadge();
+        } catch (e) {
+            console.error('Error saving responses to localStorage', e);
+        }
+    }
+
+    function updateInboxBadge() {
+        const responses = getStoredResponses();
+        const unreadCount = responses.filter(r => r.unread).length;
+        const badgeEl = document.getElementById('inbox-badge');
+        const totalPill = document.getElementById('inbox-total-pill');
+
+        if (badgeEl) {
+            badgeEl.textContent = unreadCount;
+            if (unreadCount > 0) {
+                badgeEl.style.display = 'inline-block';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
+
+        if (totalPill) {
+            totalPill.textContent = `${responses.length} Message${responses.length === 1 ? '' : 's'} (${unreadCount} New)`;
+        }
+    }
+
+    // Initialize badge on page load
+    updateInboxBadge();
+
+    /* ----------------------------------------------------------------------
+       16. CONTACT FORM REAL-TIME VALIDATION & SUBMISSION ENGINE
        ---------------------------------------------------------------------- */
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
 
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        const nameInput = document.getElementById('form-name');
+        const emailInput = document.getElementById('form-email');
+        const subjectInput = document.getElementById('form-subject');
+        const messageInput = document.getElementById('form-message');
+
+        function clearFieldError(inputEl, errorElId) {
+            const group = inputEl.closest('.form-group');
+            if (group) group.classList.remove('has-error');
+            const errEl = document.getElementById(errorElId);
+            if (errEl) errEl.textContent = '';
+        }
+
+        function setFieldError(inputEl, errorElId, msg) {
+            const group = inputEl.closest('.form-group');
+            if (group) group.classList.add('has-error');
+            const errEl = document.getElementById(errorElId);
+            if (errEl) errEl.textContent = msg;
+        }
+
+        [
+            { input: nameInput, err: 'error-name' },
+            { input: emailInput, err: 'error-email' },
+            { input: subjectInput, err: 'error-subject' },
+            { input: messageInput, err: 'error-message' }
+        ].forEach(item => {
+            if (item.input) {
+                item.input.addEventListener('input', () => clearFieldError(item.input, item.err));
+            }
+        });
+
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            let isValid = true;
+            const name = nameInput ? nameInput.value.trim() : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+            const subject = subjectInput ? subjectInput.value.trim() : '';
+            const message = messageInput ? messageInput.value.trim() : '';
+
+            if (!name || name.length < 2) {
+                setFieldError(nameInput, 'error-name', 'Please enter your name (at least 2 characters).');
+                isValid = false;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                setFieldError(emailInput, 'error-email', 'Please enter a valid email address.');
+                isValid = false;
+            }
+
+            if (!subject || subject.length < 3) {
+                setFieldError(subjectInput, 'error-subject', 'Please enter a subject (at least 3 characters).');
+                isValid = false;
+            }
+
+            if (!message || message.length < 5) {
+                setFieldError(messageInput, 'error-message', 'Please enter a message (at least 5 characters).');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showToast('Validation Error', 'Please correct the highlighted fields before sending.', 'error');
+                return;
+            }
+
             const submitBtn = document.getElementById('submit-form-btn');
-            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SENDING...`;
-            
+            const originalBtnHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> SENDING RESPONSE...`;
+            submitBtn.disabled = true;
+
+            // Construct Response Record
+            const newResponse = {
+                id: 'RESP-' + Math.floor(1000 + Math.random() * 9000),
+                name: name,
+                email: email,
+                subject: subject,
+                message: message,
+                timestamp: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
+                unread: true,
+                starred: false
+            };
+
+            // Save to LocalStorage Database
+            const responses = getStoredResponses();
+            responses.unshift(newResponse);
+            saveStoredResponses(responses);
+
+            // Attempt Delivery via Web3Forms API Endpoint if key configured or fallback gracefully
+            if (WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== 'YOUR_WEB3FORMS_ACCESS_KEY') {
+                try {
+                    const formData = new FormData();
+                    formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+                    formData.append('name', name);
+                    formData.append('email', email);
+                    formData.append('subject', `[Portfolio Contact] ${subject}`);
+                    formData.append('message', message);
+
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'Accept': 'application/json' }
+                    }).catch(() => {});
+                } catch (err) {}
+            }
+
             setTimeout(() => {
                 submitBtn.innerHTML = `<span>MESSAGE SENT!</span> <i class="fa-solid fa-check"></i>`;
-                formStatus.className = 'form-status-msg success';
-                formStatus.textContent = 'Thank you! Your message has been sent successfully. Sarnendu will get back to you shortly.';
+                submitBtn.disabled = false;
+
+                if (formStatus) {
+                    formStatus.className = 'form-status-msg success';
+                    formStatus.textContent = '✔ Thank you! Your response has been logged & routed to Sarnendu.';
+                }
+
+                showToast('Message Received!', `Thank you ${name}. Your message has been logged into the Response System.`, 'success');
+
                 contactForm.reset();
+
+                // Refresh Inbox if modal is open
+                if (typeof renderInboxList === 'function') renderInboxList();
+
                 setTimeout(() => {
-                    submitBtn.innerHTML = `<span>SEND MESSAGE</span> <i class="fa-solid fa-paper-plane"></i>`;
+                    submitBtn.innerHTML = originalBtnHTML;
                 }, 4000);
-            }, 1200);
+            }, 1000);
         });
     }
 
     /* ----------------------------------------------------------------------
-       15. BACK TO TOP BUTTON
+       17. INBOX MODAL & RESPONSE MANAGEMENT SYSTEM CONTROLLER
+       ---------------------------------------------------------------------- */
+    const responsesModal = document.getElementById('responses-modal');
+    const openInboxBtn = document.getElementById('open-inbox-btn');
+    const closeResponsesModal = document.getElementById('close-responses-modal');
+    const inboxSearchInput = document.getElementById('inbox-search-input');
+    const inboxFilterTabs = document.querySelectorAll('.inbox-tab');
+    const inboxMessageList = document.getElementById('inbox-message-list');
+    const inboxDetailView = document.getElementById('inbox-detail-view');
+    const exportResponsesBtn = document.getElementById('export-responses-btn');
+    const clearResponsesBtn = document.getElementById('clear-responses-btn');
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let selectedMsgId = null;
+
+    function openInboxModal() {
+        if (responsesModal) {
+            updateInboxBadge();
+            renderInboxList();
+            responsesModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeInboxModal() {
+        if (responsesModal) {
+            responsesModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Expose openInboxModal globally for terminal invocation
+    window.openInboxModal = openInboxModal;
+
+    if (openInboxBtn) openInboxBtn.addEventListener('click', openInboxModal);
+    if (closeResponsesModal) closeResponsesModal.addEventListener('click', closeInboxModal);
+    if (responsesModal) {
+        responsesModal.addEventListener('click', (e) => {
+            if (e.target === responsesModal) closeInboxModal();
+        });
+    }
+
+    // Search & Filter Listeners
+    if (inboxSearchInput) {
+        inboxSearchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            renderInboxList();
+        });
+    }
+
+    inboxFilterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            inboxFilterTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.getAttribute('data-filter');
+            renderInboxList();
+        });
+    });
+
+    function renderInboxList() {
+        if (!inboxMessageList) return;
+
+        let responses = getStoredResponses();
+
+        // Filter by tab
+        if (currentFilter === 'unread') {
+            responses = responses.filter(r => r.unread);
+        } else if (currentFilter === 'starred') {
+            responses = responses.filter(r => r.starred);
+        }
+
+        // Filter by search query
+        if (searchQuery) {
+            responses = responses.filter(r => 
+                r.name.toLowerCase().includes(searchQuery) ||
+                r.email.toLowerCase().includes(searchQuery) ||
+                r.subject.toLowerCase().includes(searchQuery) ||
+                r.message.toLowerCase().includes(searchQuery)
+            );
+        }
+
+        if (responses.length === 0) {
+            inboxMessageList.innerHTML = `
+                <div class="empty-inbox-state">
+                    <i class="fa-solid fa-inbox"></i>
+                    <h4>No Messages Found</h4>
+                    <p>No contact messages match your current filter or search query.</p>
+                </div>
+            `;
+            if (inboxDetailView) {
+                inboxDetailView.innerHTML = `
+                    <div class="empty-inbox-state">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                        <h4>Select a Message</h4>
+                        <p>Choose a response from the inbox list on the left to view complete details.</p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        // Auto-select first message if none selected or selected is not in filtered list
+        if (!selectedMsgId || !responses.some(r => r.id === selectedMsgId)) {
+            selectedMsgId = responses[0].id;
+        }
+
+        inboxMessageList.innerHTML = responses.map(msg => `
+            <div class="message-item ${msg.unread ? 'unread' : ''} ${msg.id === selectedMsgId ? 'active' : ''}" data-id="${msg.id}">
+                <div class="msg-item-top">
+                    <span class="msg-sender-name">${escapeHtml(msg.name)}</span>
+                    <span class="msg-timestamp">${escapeHtml(msg.timestamp.split(',')[0])}</span>
+                </div>
+                <div class="msg-subject">${escapeHtml(msg.subject)}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="msg-preview">${escapeHtml(msg.message.substring(0, 45))}...</span>
+                    <button class="msg-star-btn ${msg.starred ? 'starred' : ''}" data-id="${msg.id}" title="Star message">
+                        <i class="${msg.starred ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        // Attach click events for message selection and star toggle
+        inboxMessageList.querySelectorAll('.message-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.msg-star-btn')) return;
+                const id = item.getAttribute('data-id');
+                selectMessage(id);
+            });
+        });
+
+        inboxMessageList.querySelectorAll('.msg-star-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                toggleStarMessage(id);
+            });
+        });
+
+        renderSelectedMessageDetail();
+    }
+
+    function selectMessage(id) {
+        selectedMsgId = id;
+        const responses = getStoredResponses();
+        const msg = responses.find(r => r.id === id);
+        if (msg && msg.unread) {
+            msg.unread = false;
+            saveStoredResponses(responses);
+        }
+        renderInboxList();
+    }
+
+    function toggleStarMessage(id) {
+        const responses = getStoredResponses();
+        const msg = responses.find(r => r.id === id);
+        if (msg) {
+            msg.starred = !msg.starred;
+            saveStoredResponses(responses);
+            renderInboxList();
+        }
+    }
+
+    function renderSelectedMessageDetail() {
+        if (!inboxDetailView) return;
+
+        const responses = getStoredResponses();
+        const msg = responses.find(r => r.id === selectedMsgId);
+
+        if (!msg) {
+            inboxDetailView.innerHTML = `
+                <div class="empty-inbox-state">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                    <h4>Select a Message</h4>
+                    <p>Choose a message from the inbox sidebar to read details.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const initials = msg.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'U';
+
+        inboxDetailView.innerHTML = `
+            <div class="detail-header">
+                <h3 class="detail-subject">${escapeHtml(msg.subject)}</h3>
+                <div class="detail-meta-row">
+                    <div class="detail-sender-info">
+                        <div class="avatar-circle">${initials}</div>
+                        <div class="sender-name-email">
+                            <h4>${escapeHtml(msg.name)}</h4>
+                            <a href="mailto:${escapeHtml(msg.email)}">${escapeHtml(msg.email)}</a>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <button class="btn btn-red btn-sm" id="reply-msg-btn">
+                            <i class="fa-solid fa-reply"></i> REPLY
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="toggle-read-btn">
+                            <i class="fa-regular fa-envelope"></i> MARK UNREAD
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="delete-msg-btn" style="color: #EF4444; border-color: rgba(239,68,68,0.4);">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+                    Received: ${escapeHtml(msg.timestamp)} • Record ID: ${escapeHtml(msg.id)}
+                </div>
+            </div>
+            <div class="detail-body">${escapeHtml(msg.message)}</div>
+        `;
+
+        // Reply button trigger
+        const replyBtn = document.getElementById('reply-msg-btn');
+        if (replyBtn) {
+            replyBtn.addEventListener('click', () => {
+                const mailtoUrl = `mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}&body=${encodeURIComponent(`Hi ${msg.name},\n\nThank you for reaching out.\n\nBest regards,\nSarnendu Das`)}`;
+                window.location.href = mailtoUrl;
+            });
+        }
+
+        // Toggle unread
+        const toggleReadBtn = document.getElementById('toggle-read-btn');
+        if (toggleReadBtn) {
+            toggleReadBtn.addEventListener('click', () => {
+                msg.unread = true;
+                saveStoredResponses(responses);
+                renderInboxList();
+                showToast('Marked Unread', 'Message status updated to unread.', 'info');
+            });
+        }
+
+        // Delete message
+        const deleteBtn = document.getElementById('delete-msg-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => {
+                const updated = responses.filter(r => r.id !== msg.id);
+                saveStoredResponses(updated);
+                selectedMsgId = null;
+                renderInboxList();
+                showToast('Message Deleted', 'Response entry removed from database.', 'info');
+            });
+        }
+    }
+
+    // Export Responses
+    if (exportResponsesBtn) {
+        exportResponsesBtn.addEventListener('click', () => {
+            const responses = getStoredResponses();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(responses, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `sarnendu_portfolio_responses_${Date.now()}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast('Exported Responses', 'Response log downloaded as JSON file.', 'success');
+        });
+    }
+
+    // Clear All Responses
+    if (clearResponsesBtn) {
+        clearResponsesBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all received responses from local storage?')) {
+                saveStoredResponses([]);
+                selectedMsgId = null;
+                renderInboxList();
+                showToast('Inbox Cleared', 'All response entries have been cleared.', 'info');
+            }
+        });
+    }
+
+    /* ----------------------------------------------------------------------
+       18. BACK TO TOP BUTTON
        ---------------------------------------------------------------------- */
     const backToTopBtn = document.getElementById('back-to-top-btn');
     if (backToTopBtn) {

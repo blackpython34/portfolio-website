@@ -11,19 +11,19 @@
     --bg-card: #16161B;
     --bg-card-hover: #1E1E26;
     --bg-glass: rgba(22, 22, 27, 0.75);
-    
+
     --text-primary: #FFFFFF;
     --text-secondary: #9FA0AE;
     --text-muted: #646573;
-    
+
     --accent-red: #FF2B2B;
     --accent-red-hover: #E01E1E;
     --accent-red-glow: rgba(255, 43, 43, 0.4);
     --accent-red-subtle: rgba(255, 43, 43, 0.12);
-    
+
     --accent-gold: #FFC72C;
     --accent-gold-glow: rgba(255, 199, 44, 0.35);
-    
+
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-strong: rgba(255, 255, 255, 0.16);
     --border-red: rgba(255, 43, 43, 0.35);
@@ -72,7 +72,8 @@ body {
 }
 
 /* Optimized Hardware Acceleration for Smooth Scrolling */
-.custom-cursor-ring, .custom-cursor-dot {
+.custom-cursor-ring,
+.custom-cursor-dot {
     will-change: transform;
     backface-visibility: hidden;
 }
@@ -81,7 +82,11 @@ body {
     will-change: transform, opacity;
 }
 
-.btn, .nav-link, .card-hover, .skill-card, .project-card {
+.btn,
+.nav-link,
+.card-hover,
+.skill-card,
+.project-card {
     backface-visibility: hidden;
 }
 
@@ -249,7 +254,16 @@ body {
 
 /* Desktop Custom Mouse Cursor */
 @media (pointer: fine) {
-    body, a, button, input, textarea, select, .pill, .filter-btn, .card-hover {
+
+    body,
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    .pill,
+    .filter-btn,
+    .card-hover {
         cursor: none !important;
     }
 }
@@ -279,11 +293,11 @@ body {
     border-radius: 50%;
     pointer-events: none;
     z-index: 9998;
-    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-                height 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
-                background-color 0.2s ease, 
-                border-color 0.2s ease,
-                opacity 0.2s ease;
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        opacity 0.2s ease;
     will-change: transform;
 }
 
@@ -302,10 +316,17 @@ body {
 }
 
 @media (pointer: coarse) {
-    .custom-cursor-dot, .custom-cursor-ring {
+
+    .custom-cursor-dot,
+    .custom-cursor-ring {
         display: none !important;
     }
-    body, a, button, input, textarea {
+
+    body,
+    a,
+    button,
+    input,
+    textarea {
         cursor: auto !important;
     }
 }
@@ -327,7 +348,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: 
+    background-image:
         linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 60px 60px;
@@ -374,11 +395,28 @@ body {
 /* --------------------------------------------------------------------------
    04. GLOBAL ANIMATED FONT SYSTEM & TARGETED TRANSITIONS
    -------------------------------------------------------------------------- */
-a, button, input, textarea, select, .btn, .nav-link, .card-hover, .filter-btn, .pill, .social-btn, .back-to-top, .hero-tag-badge {
+a,
+button,
+input,
+textarea,
+select,
+.btn,
+.nav-link,
+.card-hover,
+.filter-btn,
+.pill,
+.social-btn,
+.back-to-top,
+.hero-tag-badge {
     transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
 }
 
-h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover {
+h1:hover,
+h2:hover,
+h3:hover,
+h4:hover,
+h5:hover,
+h6:hover {
     color: #FFFFFF;
     text-shadow: 0 0 16px rgba(255, 43, 43, 0.5);
     letter-spacing: 0.02em;
@@ -396,8 +434,13 @@ a:hover {
 }
 
 @keyframes textPulseGlow {
-    0% { text-shadow: 0 0 4px rgba(255, 43, 43, 0.2); }
-    100% { text-shadow: 0 0 14px rgba(255, 43, 43, 0.6); }
+    0% {
+        text-shadow: 0 0 4px rgba(255, 43, 43, 0.2);
+    }
+
+    100% {
+        text-shadow: 0 0 14px rgba(255, 43, 43, 0.6);
+    }
 }
 
 .text-gradient {
@@ -473,7 +516,8 @@ a:hover {
     letter-spacing: 0.11em;
 }
 
-.btn span, .btn i {
+.btn span,
+.btn i {
     transition: transform 0.25s ease, color 0.25s ease;
 }
 
@@ -624,9 +668,20 @@ a:hover {
 }
 
 @keyframes pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
 }
 
 .status-text {
@@ -652,7 +707,8 @@ a:hover {
     position: relative;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     color: var(--accent-red);
     letter-spacing: 0.14em;
 }
@@ -668,7 +724,8 @@ a:hover {
     transition: width 0.3s ease;
 }
 
-.nav-link.active::after, .nav-link:hover::after {
+.nav-link.active::after,
+.nav-link:hover::after {
     width: 100%;
 }
 
@@ -825,8 +882,15 @@ a:hover {
 }
 
 @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 .hero-description {
@@ -960,10 +1024,29 @@ a:hover {
     z-index: 5;
 }
 
-.frame-corner.top-left { top: 0; left: 0; border-width: 3px 0 0 3px; }
-.frame-corner.top-right { top: 0; right: 0; border-width: 3px 3px 0 0; }
-.frame-corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 3px 3px; }
-.frame-corner.bottom-right { bottom: 0; right: 0; border-width: 0 3px 3px 0; }
+.frame-corner.top-left {
+    top: 0;
+    left: 0;
+    border-width: 3px 0 0 3px;
+}
+
+.frame-corner.top-right {
+    top: 0;
+    right: 0;
+    border-width: 3px 3px 0 0;
+}
+
+.frame-corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-width: 0 0 3px 3px;
+}
+
+.frame-corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-width: 0 3px 3px 0;
+}
 
 .photo-card {
     position: relative;
@@ -1011,7 +1094,7 @@ a:hover {
     font-size: 0.75rem;
     font-weight: 700;
     color: #FFFFFF;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     pointer-events: none;
     z-index: 4;
 }
@@ -1227,9 +1310,17 @@ a:hover {
     border-radius: 50%;
 }
 
-.dot.red { background: #FF5F56; }
-.dot.yellow { background: #FFBD2E; }
-.dot.green { background: #27C93F; }
+.dot.red {
+    background: #FF5F56;
+}
+
+.dot.yellow {
+    background: #FFBD2E;
+}
+
+.dot.green {
+    background: #27C93F;
+}
 
 .terminal-title {
     font-family: var(--font-mono);
@@ -1264,9 +1355,17 @@ a:hover {
     word-break: break-word;
 }
 
-.json-key { color: #38BDF8; }
-.json-val { color: #A7F3D0; }
-.json-num { color: #FDE047; }
+.json-key {
+    color: #38BDF8;
+}
+
+.json-val {
+    color: #A7F3D0;
+}
+
+.json-num {
+    color: #FDE047;
+}
 
 .terminal-success {
     color: #34D399;
@@ -1357,7 +1456,8 @@ a:hover {
     cursor: pointer;
 }
 
-.filter-btn:hover, .filter-btn.active {
+.filter-btn:hover,
+.filter-btn.active {
     background: var(--accent-red);
     color: #FFFFFF;
     border-color: var(--accent-red);
@@ -1685,7 +1785,8 @@ a:hover {
     gap: 40px;
 }
 
-.contact-info-card, .contact-form-card {
+.contact-info-card,
+.contact-form-card {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -1809,7 +1910,8 @@ a:hover {
     letter-spacing: 0.08em;
 }
 
-.form-group input, .form-group textarea {
+.form-group input,
+.form-group textarea {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
@@ -1821,7 +1923,8 @@ a:hover {
     width: 100%;
 }
 
-.form-group input:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group textarea:focus {
     border-color: var(--accent-red);
     box-shadow: 0 0 10px var(--accent-red-subtle);
 }
@@ -2061,7 +2164,10 @@ a:hover {
         max-width: 320px;
     }
 
-    .about-grid, .projects-grid, .education-grid, .contact-grid {
+    .about-grid,
+    .projects-grid,
+    .education-grid,
+    .contact-grid {
         grid-template-columns: 1fr;
     }
 
@@ -2082,7 +2188,8 @@ a:hover {
         -webkit-backdrop-filter: none !important;
     }
 
-    .desktop-nav, .status-badge {
+    .desktop-nav,
+    .status-badge {
         display: none;
     }
 
@@ -2199,7 +2306,11 @@ a:hover {
         letter-spacing: 0.06em;
     }
 
-    .about-bio-card, .contact-info-card, .contact-form-card, .project-card, .edu-card {
+    .about-bio-card,
+    .contact-info-card,
+    .contact-form-card,
+    .project-card,
+    .edu-card {
         padding: 20px 16px;
     }
 
