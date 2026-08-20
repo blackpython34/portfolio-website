@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         requestAnimationFrame(renderCursorRing);
 
-        const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .pill, .filter-btn, .card-hover, .social-btn, .back-to-top, .brand-logo, .view-project-btn, .open-resume-trigger, .intro-skip-btn');
+        const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, .pill, .filter-btn, .card-hover, .social-btn, .back-to-top, .brand-logo, .view-project-btn, .view-cert-btn, .open-resume-trigger, .intro-skip-btn');
 
         interactiveElements.forEach(el => {
             el.addEventListener('mouseenter', () => cursorRing.classList.add('hovered'));
@@ -282,6 +282,117 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         requestAnimationFrame(drawParticles);
+    }
+
+    /* ----------------------------------------------------------------------
+       03B. DYNAMIC REFRESH RATE ANIMATED BACKGROUND VIDEO ENGINE
+       ---------------------------------------------------------------------- */
+    const bgVideo = document.getElementById('bg-video');
+    const bgCanvas = document.getElementById('bg-video-canvas');
+
+    if (bgCanvas) {
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgWidth = bgCanvas.width = window.innerWidth;
+        let bgHeight = bgCanvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            bgWidth = bgCanvas.width = window.innerWidth;
+            bgHeight = bgCanvas.height = window.innerHeight;
+        });
+
+        // 3D Cyber Mesh & Dynamic Animated Energy Stream Loop
+        const linesCount = 18;
+        let angleOffset = 0;
+        const cyberBeams = [];
+
+        for (let i = 0; i < 45; i++) {
+            cyberBeams.push({
+                x: Math.random() * bgWidth,
+                y: Math.random() * bgHeight,
+                len: Math.random() * 160 + 60,
+                speed: Math.random() * 2.8 + 1.2,
+                opacity: Math.random() * 0.5 + 0.15,
+                width: Math.random() * 2.5 + 1.0,
+                color: Math.random() > 0.3 ? '255, 43, 43' : '56, 189, 248'
+            });
+        }
+
+        let lastBgTime = performance.now();
+
+        function renderBgVideoCanvas(now) {
+            const currentTime = now || performance.now();
+            // Dynamic refresh rate frame delta scaling (60Hz to 240Hz dynamic adapt)
+            const deltaMs = currentTime - lastBgTime;
+            const dt = Math.min(deltaMs / (1000 / 60), 3.0);
+            lastBgTime = currentTime;
+
+            bgCtx.clearRect(0, 0, bgWidth, bgHeight);
+
+            // 1. Dynamic Pulsing Radial Energy Glow
+            angleOffset += 0.012 * dt;
+            const pulseRadius = Math.sin(angleOffset * 0.8) * 110 + (bgWidth * 0.38);
+            
+            const grad = bgCtx.createRadialGradient(
+                bgWidth / 2, bgHeight / 2, 20,
+                bgWidth / 2, bgHeight / 2, Math.max(pulseRadius, 120)
+            );
+            grad.addColorStop(0, 'rgba(255, 43, 43, 0.12)');
+            grad.addColorStop(0.4, 'rgba(255, 43, 43, 0.04)');
+            grad.addColorStop(0.8, 'rgba(15, 15, 22, 0.02)');
+            grad.addColorStop(1, 'rgba(7, 7, 9, 0)');
+
+            bgCtx.fillStyle = grad;
+            bgCtx.fillRect(0, 0, bgWidth, bgHeight);
+
+            // 2. Continuous Upward Cybernetic Laser Stream Beams
+            cyberBeams.forEach(beam => {
+                beam.y -= beam.speed * dt;
+                if (beam.y + beam.len < 0) {
+                    beam.y = bgHeight + beam.len;
+                    beam.x = Math.random() * bgWidth;
+                }
+
+                const beamGrad = bgCtx.createLinearGradient(beam.x, beam.y, beam.x, beam.y - beam.len);
+                beamGrad.addColorStop(0, `rgba(${beam.color}, 0)`);
+                beamGrad.addColorStop(0.5, `rgba(${beam.color}, ${beam.opacity})`);
+                beamGrad.addColorStop(1, `rgba(${beam.color}, 0)`);
+
+                bgCtx.beginPath();
+                bgCtx.moveTo(beam.x, beam.y);
+                bgCtx.lineTo(beam.x, beam.y - beam.len);
+                bgCtx.strokeStyle = beamGrad;
+                bgCtx.lineWidth = beam.width;
+                bgCtx.stroke();
+            });
+
+            // 3. Dynamic Wave Grid Overlay
+            bgCtx.strokeStyle = 'rgba(255, 43, 43, 0.06)';
+            bgCtx.lineWidth = 1;
+
+            const step = bgHeight / linesCount;
+            for (let i = 0; i < linesCount; i++) {
+                const y = i * step + (Math.sin(angleOffset + i * 0.45) * 12);
+                bgCtx.beginPath();
+                bgCtx.moveTo(0, y);
+                bgCtx.quadraticCurveTo(bgWidth / 2, y + Math.cos(angleOffset + i * 0.35) * 24, bgWidth, y);
+                bgCtx.stroke();
+            }
+
+            requestAnimationFrame(renderBgVideoCanvas);
+        }
+
+        requestAnimationFrame(renderBgVideoCanvas);
+
+        // Pipe animated stream directly into <video id="bg-video"> if no physical video file is attached
+        if (bgVideo && typeof bgCanvas.captureStream === 'function') {
+            try {
+                const videoStream = bgCanvas.captureStream(60);
+                bgVideo.srcObject = videoStream;
+                bgVideo.play().catch(() => {});
+            } catch (e) {
+                // Fallback handling
+            }
+        }
     }
 
     /* ----------------------------------------------------------------------
@@ -542,6 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         - <strong style="color: #38BDF8;">skills</strong> : List top technical competencies<br>
                         - <strong style="color: #38BDF8;">projects</strong> : Display featured software projects<br>
                         - <strong style="color: #38BDF8;">education</strong> : Show double degree details<br>
+                        - <strong style="color: #38BDF8;">certifications</strong> : View verified technical certificates<br>
                         - <strong style="color: #38BDF8;">contact</strong> : Get direct contact channels<br>
                         - <strong style="color: #38BDF8;">clear</strong> : Reset terminal output</p>`;
                         break;
@@ -562,8 +674,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'education':
                         responseHTML = `<p style="color: #A7F3D0;">- B.Tech CSE (AI & ML) — BCREC (2024-Present)<br>- B.Sc CS & Data Analytics — IIT Patna (2024-Present)<br>- Class XII (CBSE): 86.0% | Class X (ICSE): 92.4%</p>`;
                         break;
+                    case 'certifications':
+                    case 'certs':
+                        responseHTML = `<p style="color: #F472B6;">1. Build with AI (Solution Challenge 2026) — Google Cloud & Hack2Skill<br>
+                        2. Software Engineering Job Simulation — Forage (Jan 28, 2026)<br>
+                        3. Hack Zenith 2025 (2nd Runner Up / 3rd Place) — GDG On Campus (Team Pixel Pioneers)</p>`;
+                        break;
                     case 'contact':
-                        responseHTML = `<p style="color: #FF2B2B;">Email: sarnendudas923@gmail.com<br>Location: Bankura / Durgapur, West Bengal, India<br>GitHub: https://github.com/blackpython34</p>`;
+                        responseHTML = `<p style="color: #FF2B2B;">Email: sarnendudas923@gmail.com<br>Location: Bankura / Durgapur, West Bengal, India<br>GitHub: https://github.com/blackpython34<br>LinkedIn: https://linkedin.com/in/sarnendu-das<br>Instagram: https://instagram.com/lavender_gray17/</p>`;
                         break;
                     case 'clear':
                         terminalBody.innerHTML = `
@@ -734,6 +852,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 projectModal.classList.remove('active');
                 document.body.style.overflow = '';
             }
+        });
+    }
+
+    /* ----------------------------------------------------------------------
+       12B. CERTIFICATE PDF VIEWER MODAL
+       ---------------------------------------------------------------------- */
+    const certTriggers = document.querySelectorAll('.view-cert-btn');
+    const certModal = document.getElementById('cert-modal');
+    const closeCertModal = document.getElementById('close-cert-modal');
+    const modalCertTitle = document.getElementById('modal-cert-title');
+    const certIframe = document.getElementById('cert-iframe');
+    const modalCertDownload = document.getElementById('modal-cert-download');
+    const modalCertOpenTab = document.getElementById('modal-cert-opentab');
+
+    certTriggers.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const certUrl = btn.getAttribute('data-cert');
+            const title = btn.getAttribute('data-title') || 'CERTIFICATE VIEWER';
+
+            if (certModal && certIframe) {
+                if (modalCertTitle) modalCertTitle.textContent = title;
+                certIframe.src = certUrl;
+
+                const filename = certUrl.substring(certUrl.lastIndexOf('/') + 1);
+                if (modalCertDownload) {
+                    modalCertDownload.href = certUrl;
+                    modalCertDownload.download = filename;
+                }
+                if (modalCertOpenTab) {
+                    modalCertOpenTab.href = certUrl;
+                }
+
+                certModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+
+    function hideCertModal() {
+        if (certModal) {
+            certModal.classList.remove('active');
+            if (certIframe) certIframe.src = '';
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (closeCertModal) closeCertModal.addEventListener('click', hideCertModal);
+    if (certModal) {
+        certModal.addEventListener('click', (e) => {
+            if (e.target === certModal) hideCertModal();
         });
     }
 

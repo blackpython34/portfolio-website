@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=3">
 </head>
 
 <body class="dark-theme">
@@ -71,6 +71,13 @@
     <div class="custom-cursor-dot" id="cursor-dot"></div>
     <div class="custom-cursor-ring" id="cursor-ring"></div>
 
+    <!-- FULL SITE ANIMATED BACKGROUND VIDEO & AMBIENT ENGINE -->
+    <div class="bg-video-wrapper">
+        <video id="bg-video" class="bg-video-element" autoplay loop muted playsinline poster="./assets/sarnendu.jpg"></video>
+        <canvas id="bg-video-canvas"></canvas>
+        <div class="bg-video-overlay"></div>
+    </div>
+
     <!-- Ambient Floating Canvas Particles & Cursor Glow -->
     <canvas id="particle-canvas"></canvas>
     <div class="grid-background"></div>
@@ -99,6 +106,7 @@
                 <a href="#projects" class="nav-link">PROJECTS</a>
                 <a href="#experience" class="nav-link">EXPERIENCE</a>
                 <a href="#education" class="nav-link">EDUCATION</a>
+                <a href="#certifications" class="nav-link">CERTIFICATIONS</a>
                 <a href="#contact" class="nav-link">CONTACT</a>
             </nav>
 
@@ -129,7 +137,8 @@
             <li><a href="#projects" class="mobile-nav-link">04 // PROJECTS</a></li>
             <li><a href="#experience" class="mobile-nav-link">05 // EXPERIENCE</a></li>
             <li><a href="#education" class="mobile-nav-link">06 // EDUCATION</a></li>
-            <li><a href="#contact" class="mobile-nav-link">07 // CONTACT</a></li>
+            <li><a href="#certifications" class="mobile-nav-link">07 // CERTIFICATIONS</a></li>
+            <li><a href="#contact" class="mobile-nav-link">08 // CONTACT</a></li>
         </ul>
         <div class="mobile-menu-footer">
             <button class="btn btn-red btn-full open-resume-trigger">
@@ -811,11 +820,148 @@
             </div>
         </section>
 
-        <!-- SECTION 06: CONTACT ME -->
-        <section class="section contact-section" id="contact">
+        <!-- SECTION 06: CERTIFICATIONS & CREDENTIALS -->
+        <section class="section certifications-section" id="certifications">
             <div class="container">
                 <div class="section-header reveal-item">
                     <span class="section-num">06 //</span>
+                    <h2 class="section-title text-kinetic">CERTIFICATIONS &amp; <span class="text-red">CREDENTIALS</span></h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="certifications-grid">
+
+                    <!-- Certificate 1: Google Cloud -->
+                    <div class="cert-card card-hover reveal-item" data-delay="100">
+                        <div class="cert-card-header">
+                            <div class="cert-icon-box">
+                                <i class="fa-brands fa-google text-red"></i>
+                            </div>
+                            <span class="cert-status-tag">PARTICIPATION &amp; PROTOTYPE</span>
+                        </div>
+                        <div class="cert-card-body">
+                            <span class="cert-issuer">GOOGLE CLOUD &amp; HACK2SKILL</span>
+                            <h3 class="cert-title animated-subhead">Build with AI — Solution Challenge 2026</h3>
+                            <p class="cert-desc animated-para">
+                                Awarded by Google &amp; Hack2Skill for successfully developing and submitting an innovative AI prototype for Solution Challenge 2026. Demonstrates expertise in cloud AI architecture, rapid prototyping, and engineering AI-driven solutions to real-world challenges.
+                            </p>
+                            <div class="cert-meta-info">
+                                <span><i class="fa-regular fa-calendar-check"></i> Issued: July 22, 2026</span>
+                                <span><i class="fa-solid fa-certificate"></i> ID: 2026H2S07SCBWAI-PS08120</span>
+                            </div>
+                            <div class="cert-tech-pills">
+                                <span>Google Cloud</span>
+                                <span>Build with AI</span>
+                                <span>Prototype Architecture</span>
+                                <span>AI / ML</span>
+                            </div>
+                        </div>
+                        <div class="cert-card-footer">
+                            <button class="btn btn-red btn-sm view-cert-btn" data-cert="./assets/Google_Cloud_Certificate.pdf" data-title="Google Cloud — Solution Challenge 2026 Certificate">
+                                <i class="fa-solid fa-file-pdf"></i> VIEW CERTIFICATE
+                            </button>
+                            <a href="./assets/Google_Cloud_Certificate.pdf" download="Google_Cloud_Certificate.pdf" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-download"></i> DOWNLOAD
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Certificate 2: Forage -->
+                    <div class="cert-card card-hover reveal-item" data-delay="200">
+                        <div class="cert-card-header">
+                            <div class="cert-icon-box">
+                                <i class="fa-solid fa-laptop-code text-red"></i>
+                            </div>
+                            <span class="cert-status-tag green">JOB SIMULATION</span>
+                        </div>
+                        <div class="cert-card-body">
+                            <span class="cert-issuer">FORAGE</span>
+                            <h3 class="cert-title animated-subhead">Software Engineering Job Simulation</h3>
+                            <p class="cert-desc animated-para">
+                                Completed an intensive hands-on software engineering job simulation with practical tasks covering repository setup, Apache Kafka event streaming, H2 in-memory database setup, REST API architecture, and REST controller implementation.
+                            </p>
+                            <div class="cert-meta-info">
+                                <span><i class="fa-regular fa-calendar-check"></i> Issued: Jan 28, 2026</span>
+                                <span><i class="fa-solid fa-certificate"></i> ID: QaYaXjywJWSGX5WC7</span>
+                            </div>
+                            <div class="cert-tech-pills">
+                                <span>Software Engineering</span>
+                                <span>Kafka Integration</span>
+                                <span>REST APIs</span>
+                                <span>H2 Database</span>
+                            </div>
+                        </div>
+                        <div class="cert-card-footer">
+                            <button class="btn btn-red btn-sm view-cert-btn" data-cert="./assets/Forage_Software_Engineering_Certificate.pdf" data-title="Forage — Software Engineering Job Simulation Certificate">
+                                <i class="fa-solid fa-file-pdf"></i> VIEW CERTIFICATE
+                            </button>
+                            <a href="./assets/Forage_Software_Engineering_Certificate.pdf" download="Forage_Software_Engineering_Certificate.pdf" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-download"></i> DOWNLOAD
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Certificate 3: Hack Zenith 2025 -->
+                    <div class="cert-card card-hover reveal-item" data-delay="300">
+                        <div class="cert-card-header">
+                            <div class="cert-icon-box">
+                                <i class="fa-solid fa-trophy text-gold"></i>
+                            </div>
+                            <span class="cert-status-tag gold">2ND RUNNER UP (3RD PLACE)</span>
+                        </div>
+                        <div class="cert-card-body">
+                            <span class="cert-issuer">GDG ON CAMPUS • DR. B.C. ROY ENGG COLLEGE</span>
+                            <h3 class="cert-title animated-subhead">Hack Zenith 2025 Hackathon</h3>
+                            <p class="cert-desc animated-para">
+                                Awarded 2nd Runner Up (3rd Place) with Team Pixel Pioneers at Hack Zenith 2025. Recognized for outstanding innovation, rapid solution design, problem-solving, and seamless technical collaboration in building an impactful web prototype.
+                            </p>
+                            <div class="cert-meta-info">
+                                <span><i class="fa-regular fa-calendar-check"></i> Issued: 2025</span>
+                                <span><i class="fa-solid fa-users"></i> Team Pixel Pioneers</span>
+                            </div>
+                            <div class="cert-tech-pills">
+                                <span>Hackathon Winner</span>
+                                <span>GDG On Campus</span>
+                                <span>Rapid Prototyping</span>
+                                <span>Team Leadership</span>
+                            </div>
+                        </div>
+                        <div class="cert-card-footer">
+                            <button class="btn btn-red btn-sm view-cert-btn" data-cert="./assets/Hack_Zenith_2025_Certificate.pdf" data-title="Hack Zenith 2025 — Certificate of Achievement">
+                                <i class="fa-solid fa-file-pdf"></i> VIEW CERTIFICATE
+                            </button>
+                            <a href="./assets/Hack_Zenith_2025_Certificate.pdf" download="Hack_Zenith_2025_Certificate.pdf" class="btn btn-outline btn-sm">
+                                <i class="fa-solid fa-download"></i> DOWNLOAD
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- More Certifications LinkedIn Banner -->
+                <div class="cert-linkedin-banner card-hover reveal-item" data-delay="400">
+                    <div class="banner-content">
+                        <div class="banner-icon">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </div>
+                        <div class="banner-text">
+                            <h4 class="animated-subhead">More Certifications Available on LinkedIn</h4>
+                            <p class="animated-para">Additional verified technical credentials, course completion badges, and professional certificates are available to view directly on my LinkedIn profile.</p>
+                        </div>
+                    </div>
+                    <a href="https://www.linkedin.com/in/sarnendu-das" target="_blank" rel="noopener" class="btn btn-linkedin">
+                        <span>VIEW ON LINKEDIN</span>
+                        <i class="fa-brands fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 07: CONTACT ME -->
+        <section class="section contact-section" id="contact">
+            <div class="container">
+                <div class="section-header reveal-item">
+                    <span class="section-num">07 //</span>
                     <h2 class="section-title text-kinetic">GET IN <span class="text-red">TOUCH</span></h2>
                     <div class="section-line"></div>
                 </div>
@@ -868,11 +1014,11 @@
                             <a href="mailto:sarnendudas923@gmail.com" class="social-btn" aria-label="Email">
                                 <i class="fa-solid fa-envelope"></i>
                             </a>
-                            <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="social-btn"
+                            <a href="https://www.linkedin.com/in/sarnendu-das" target="_blank" rel="noopener" class="social-btn"
                                 aria-label="LinkedIn">
                                 <i class="fa-brands fa-linkedin-in"></i>
                             </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener" class="social-btn"
+                            <a href="https://www.instagram.com/lavender_gray17/" target="_blank" rel="noopener" class="social-btn"
                                 aria-label="Instagram">
                                 <i class="fa-brands fa-instagram"></i>
                             </a>
@@ -970,6 +1116,30 @@
             </div>
             <div class="modal-body" id="modal-project-body">
                 <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE PDF VIEWER MODAL -->
+    <div class="modal-overlay" id="cert-modal">
+        <div class="modal-container resume-modal-container">
+            <div class="modal-header">
+                <div class="modal-title-box">
+                    <i class="fa-solid fa-certificate text-red"></i>
+                    <span id="modal-cert-title">CERTIFICATE VIEWER</span>
+                </div>
+                <div class="modal-actions">
+                    <a href="#" id="modal-cert-download" download class="btn btn-red btn-sm">
+                        <i class="fa-solid fa-download"></i> DOWNLOAD
+                    </a>
+                    <a href="#" id="modal-cert-opentab" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> OPEN IN NEW TAB
+                    </a>
+                    <button class="modal-close" id="close-cert-modal">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <iframe src="" id="cert-iframe" class="pdf-iframe" title="Certificate PDF Viewer"></iframe>
             </div>
         </div>
     </div>
